@@ -69,6 +69,11 @@ def create_list():
 def delete_list(list_id):
     try:
         list = List.query.get(list_id)
+        # check if the list has any tasks and delete them
+        tasks = Task.query.filter_by(list_id=list_id).all()
+        for task in tasks:
+            db.session.delete(task)
+
         db.session.delete(list)
         db.session.commit()
 
@@ -78,7 +83,7 @@ def delete_list(list_id):
         return jsonify({"message": message}), status
     except Exception as e:
         message = f"Failed to delete the list with id {list_id}."
-        status = 400
+        status = 500
 
         return jsonify({"message": f"{message}. error is {e}"}), status
 
