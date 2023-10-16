@@ -51,6 +51,7 @@ const ListCard = ({ list_id, list_name, onUpdateLists }) => {
       // Update the lists after successful update
       onUpdateLists();
       setIsEditOpen(false);
+      setIsHovered(false);
     } catch (error) {
       console.error("Error updating list:", error);
     }
