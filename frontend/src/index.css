@@ -1,9 +1,9 @@
-* {
+/* CSS */
+body,
+#root,
+.app-container {
     margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body{
-    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
