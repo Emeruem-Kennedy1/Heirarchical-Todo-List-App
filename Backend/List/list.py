@@ -133,14 +133,11 @@ def create_task(list_id):
     try:
         name = request.json.get("name")
         parent_id = None
-        can_have_subtasks = True
-        parent_id = None
         task_depth = 0
 
         task = Task(
             name=name,
             list_id=list_id,
-            can_have_subtasks=can_have_subtasks,
             parent_id=parent_id,
             task_depth=task_depth,
         )
@@ -149,6 +146,7 @@ def create_task(list_id):
 
         return jsonify({"message": f"I created a new task in list with id {list_id}"})
     except Exception as e:
+        print(e)
         return jsonify({"message": f"Failed to create a new task. error is {e}"}), 400
 
 
@@ -171,7 +169,8 @@ def modify_task(list_id, task_id):
 def delete_task(list_id, task_id):
     try:
         task = Task.query.get(task_id)
-        print(task.name)
+        for subtask in task.subtasks:
+            db.session.delete(subtask)
         db.session.delete(task)
         db.session.commit()
 

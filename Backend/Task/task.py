@@ -29,6 +29,7 @@ def create_subtask(task_id):
     try:
         parent_task = Task.query.get(task_id)
         parent_task.task_depth = parent_task.calculate_depth()
+        print(parent_task.task_depth)
         name = request.json.get("name")
         can_have_subtasks = True if parent_task.task_depth < 2 else False
 
@@ -41,7 +42,6 @@ def create_subtask(task_id):
 
         subtask = Task(
             name=name,
-            can_have_subtasks=can_have_subtasks,
             list_id=parent_task.list_id,
             parent_id=parent_task.id,
             task_depth=parent_task.task_depth + 1,
@@ -89,6 +89,8 @@ def update_task(task_id):
 def delete_task(task_id):
     try:
         task = Task.query.get(task_id)
+        for subtask in task.subtasks:
+            db.session.delete(subtask)
         db.session.delete(task)
         db.session.commit()
 

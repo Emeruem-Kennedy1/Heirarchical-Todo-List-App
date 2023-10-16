@@ -31,7 +31,6 @@ class Task(db.Model):
     name = db.Column(db.String(50), nullable=False)
     list_id = db.Column(db.Integer, db.ForeignKey("list.id"), nullable=False)
     task_depth = db.Column(db.Integer, nullable=False)
-    can_have_subtasks = db.Column(db.Boolean, nullable=False)
     parent_id = db.Column(db.Integer, db.ForeignKey("task.id"))
     subtasks = db.relationship(
         "Task",
@@ -50,7 +49,7 @@ class Task(db.Model):
             "list_id": self.list_id,
             "subtasks": [subtask.to_dict() for subtask in self.subtasks],
             "task_depth": self.task_depth,
-            "can_have_subtasks": self.can_have_subtasks,
+            "can_have_subtasks": True if self.task_depth < 2 else False,
         }
 
     def calculate_depth(self):
