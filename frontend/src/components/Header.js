@@ -9,23 +9,34 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import Grid from "@mui/material/Grid";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const navigate = useNavigate();
+
+  const gotoHome = () => {
+    navigate("/");
+  }
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Toolbar>
         <Grid container justifyContent="space-between" alignItems="center">
-          {/* Left Side - Main Title */}
-          <Grid item>
-            <Typography variant="h6" component="div">
-              Main Title
-            </Typography>
-          </Grid>
+          <Box>
+            <Button onClick={gotoHome} color="inherit" disableRipple>
+              <Typography
+                variant="h6"
+                component="div"
+                fontFamily="Public Sans"
+                fontWeight={900}
+              >
+                Two-Do
+              </Typography>
+            </Button>
+          </Box>
 
-          {/* Right Side - Avatar Icon, Name, and Logout Button */}
           <Grid item>
             <Box display="flex" alignItems="center">
               <AccountCircle fontSize="large" />

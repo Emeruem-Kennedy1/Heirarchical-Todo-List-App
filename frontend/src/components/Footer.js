@@ -8,7 +8,15 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <Box sx={{ backgroundColor: '#f7f7f7', py: 3, position: 'absolute', bottom: 0, width: '100%' }}>
+    <Box
+      sx={{
+        backgroundColor: "#f7f7f7",
+        py: 3,
+        position: "sticky",
+        bottom: 0,
+        width: "100%",
+      }}
+    >
       <Container maxWidth="lg">
         <Typography variant="body2" color="textSecondary" align="center">
           © Kendo {currentYear}
@@ -16,6 +24,6 @@ const Footer = () => {
       </Container>
     </Box>
   );
-}
+};
 
 export default Footer;

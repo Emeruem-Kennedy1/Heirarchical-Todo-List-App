@@ -1,6 +1,4 @@
 import React, { useState, useCallback } from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import ListCard from "../components/ListCard";
 import { useApi } from "../contexts/ApiProvider";
 import Box from "@mui/material/Box";
@@ -22,7 +20,6 @@ const ListsPage = () => {
 
   return (
     <div>
-      <Header />
       <Box
         height="80vh"
         display="flex"
@@ -41,7 +38,6 @@ const ListsPage = () => {
           ))}
         </Box>
       </Box>
-      <Footer />
     </div>
   );
 };
