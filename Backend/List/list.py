@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify  # noqa
-from db.models import List, Task, db  # noqa
+from db.models import List, Task
+from extensions import db
+from flask_login import login_required, current_user
 
 
 list_blueprint = Blueprint("list", __name__)
@@ -7,7 +9,10 @@ list_blueprint = Blueprint("list", __name__)
 
 # get all the user lists from the database
 @list_blueprint.route("/lists", methods=["GET"])
+@login_required
 def get_all_lists():
+    if not current_user.is_authenticated:
+        return jsonify({"message": "User is not authenticated"}), 401
     success_message = "Successfully retrieved all lists from the database."
     failure_message = "Failed to retrieve all lists from the database."
     success_status = 200
@@ -29,6 +34,7 @@ def get_all_lists():
 
 # get a specific list from the database
 @list_blueprint.route("/lists/<list_id>", methods=["GET"])
+@login_required
 def get_list(list_id):
     success_message = f"Successfully retrieved list with id {list_id}."
     failure_message = f"Failed to retrieve list with id {list_id}."
@@ -43,6 +49,7 @@ def get_list(list_id):
 
 # create a new list in the database
 @list_blueprint.route("/lists", methods=["POST"])
+@login_required
 def create_list():
     try:
         name = request.json.get("name")
@@ -66,6 +73,7 @@ def create_list():
 
 # delete a specific list from the database
 @list_blueprint.route("/lists/<list_id>", methods=["DELETE"])
+@login_required
 def delete_list(list_id):
     try:
         list = List.query.get(list_id)
@@ -90,6 +98,7 @@ def delete_list(list_id):
 
 # update a specific list in the database
 @list_blueprint.route("/lists/<list_id>", methods=["PUT"])
+@login_required
 def update_list(list_id):
     try:
         name = request.json.get("name")
@@ -110,6 +119,7 @@ def update_list(list_id):
 
 # get all tasks from a specific list
 @list_blueprint.route("/lists/<list_id>/tasks", methods=["GET"])
+@login_required
 def get_tasks(list_id):
     try:
         tasks = Task.query.filter_by(list_id=list_id).all()
@@ -129,6 +139,7 @@ def get_tasks(list_id):
 
 # create a new base task in a specific list
 @list_blueprint.route("/lists/<list_id>/tasks", methods=["POST"])
+@login_required
 def create_task(list_id):
     try:
         name = request.json.get("name")
@@ -152,6 +163,7 @@ def create_task(list_id):
 
 # modify a specific task in a specific list
 @list_blueprint.route("/lists/<list_id>/tasks/<task_id>", methods=["PUT"])
+@login_required
 def modify_task(list_id, task_id):
     try:
         name = request.json.get("name")
@@ -166,6 +178,7 @@ def modify_task(list_id, task_id):
 
 # delete a specific base task in a specific list
 @list_blueprint.route("/lists/<list_id>/tasks/<task_id>", methods=["DELETE"])
+@login_required
 def delete_task(list_id, task_id):
     try:
         task = Task.query.get(task_id)
@@ -181,6 +194,7 @@ def delete_task(list_id, task_id):
 
 # move a specific task to a different list
 @list_blueprint.route("/lists/<list_id>/tasks/<task_id>/move", methods=["PUT"])
+@login_required
 def move_task(list_id, task_id):
     try:
         new_list_id = request.json.get("new_list_id")

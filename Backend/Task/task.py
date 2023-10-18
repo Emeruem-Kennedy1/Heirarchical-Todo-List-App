@@ -1,11 +1,14 @@
 from flask import Blueprint, request, jsonify  # noqa
-from db.models import List, Task, db  # noqa
+from db.models import Task
+from extensions import db
+from flask_login import login_required
 
 task_blueprint = Blueprint("task", __name__)
 
 
 # get subtasks from a specific task
 @task_blueprint.route("/task/<task_id>/subtasks", methods=["GET"])
+@login_required
 def get_subtasks(task_id):
     try:
         task = Task.query.get(task_id)
@@ -25,6 +28,7 @@ def get_subtasks(task_id):
 
 # create a new subtask in a specific task
 @task_blueprint.route("/task/<task_id>/subtasks", methods=["POST"])
+@login_required
 def create_subtask(task_id):
     try:
         parent_task = Task.query.get(task_id)
@@ -65,6 +69,7 @@ def create_subtask(task_id):
 
 # update a specific task
 @task_blueprint.route("/task/<task_id>", methods=["PUT"])
+@login_required
 def update_task(task_id):
     try:
         name = request.json.get("name")
@@ -86,6 +91,7 @@ def update_task(task_id):
 
 # delete a specific task
 @task_blueprint.route("/task/<task_id>", methods=["DELETE"])
+@login_required
 def delete_task(task_id):
     try:
         task = Task.query.get(task_id)
