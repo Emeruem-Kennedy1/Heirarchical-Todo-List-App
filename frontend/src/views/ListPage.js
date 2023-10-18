@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import NestedAccordion from "../components/NestedAccordion";
 import { useApi } from "../contexts/ApiProvider";
 import AddTaskForm from "../components/AddTaskFrom";
-import { Typography } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 
 const ListPage = () => {
   const { listId } = useParams();
@@ -66,13 +66,20 @@ const ListPage = () => {
   );
 
   return (
-    <>
-      <Typography variant="h4" align="center" gutterBottom> {listName} </Typography>
-      <AddTaskForm onAddTask={handleAddTask}/>
+    <Container sx={{
+      height: "100vh",
+    }}>
+      <Typography variant="h4" align="center" sx={{
+        marginTop: "5%",
+        marginBottom: "5%",
+      }}>
+        {listName}
+      </Typography>
+      <AddTaskForm onAddTask={handleAddTask} />
       <div style={{ width: "80%", margin: "20px auto" }}>
         {tasks.map((task) => renderTask(task))}
       </div>
-    </>
+    </Container>
   );
 };
 

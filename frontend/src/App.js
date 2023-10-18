@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ApiProvider from "./contexts/ApiProvider";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import NotFoundPage from "./views/NotFoundPage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
               <Route path="/" element={<ListsPage />} />
               <Route path="/list/:listId" element={<ListPage />} />
               <Route path="/lists" element={<ListsPage />} />
+              <Route path="*" element={<NotFoundPage/> } />
             </Routes>
             <Footer />
           </div>
