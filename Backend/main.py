@@ -8,12 +8,14 @@ from Auth.auth import auth_bp  # noqa
 from db.models import User  # noqa
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+CORS(app, supports_credentials=True)
 app.register_blueprint(list_blueprint, url_prefix="/api")
 app.register_blueprint(task_blueprint, url_prefix="/api")
 app.register_blueprint(auth_bp, url_prefix="/api")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///hierarchy.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config['SESSION_COOKIE_SAMESITE'] = "None"
+app.config['SESSION_COOKIE_SECURE'] = True
 app.secret_key = 'kendo'
 db.init_app(app)
 login_manager = LoginManager()

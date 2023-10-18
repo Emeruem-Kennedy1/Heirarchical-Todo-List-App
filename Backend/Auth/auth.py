@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from db.models import User
 from extensions import db
-from flask_login import login_user
+from flask_login import login_user, logout_user
 
 auth_bp = Blueprint("login", __name__)
 
@@ -59,3 +59,12 @@ def signup():
         )
     except Exception as e:
         return jsonify({"message": f"Failed to create a new user. error is {e}"}), 400
+
+
+@auth_bp.route("/logout", methods=["POST"])
+def logout():
+    try:
+        logout_user()
+        return jsonify({"message": "Successfully logged out"}), 200
+    except Exception as e:
+        return jsonify({"message": f"Failed to log out. error is {e}"}), 400

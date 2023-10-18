@@ -36,6 +36,8 @@ def get_all_lists():
 @list_blueprint.route("/lists/<list_id>", methods=["GET"])
 @login_required
 def get_list(list_id):
+    if not current_user.is_authenticated:
+        return jsonify({"message": "User is not authenticated"}), 401
     success_message = f"Successfully retrieved list with id {list_id}."
     failure_message = f"Failed to retrieve list with id {list_id}."
     status = 200
@@ -51,6 +53,8 @@ def get_list(list_id):
 @list_blueprint.route("/lists", methods=["POST"])
 @login_required
 def create_list():
+    if not current_user.is_authenticated:
+        return jsonify({"message": "User is not authenticated"}), 401
     try:
         name = request.json.get("name")
 
@@ -75,6 +79,8 @@ def create_list():
 @list_blueprint.route("/lists/<list_id>", methods=["DELETE"])
 @login_required
 def delete_list(list_id):
+    if not current_user.is_authenticated:
+        return jsonify({"message": "User is not authenticated"}), 401
     try:
         list = List.query.get(list_id)
         # check if the list has any tasks and delete them
@@ -100,6 +106,8 @@ def delete_list(list_id):
 @list_blueprint.route("/lists/<list_id>", methods=["PUT"])
 @login_required
 def update_list(list_id):
+    if not current_user.is_authenticated:
+        return jsonify({"message": "User is not authenticated"}), 401
     try:
         name = request.json.get("name")
         list = List.query.get(list_id)
@@ -121,6 +129,8 @@ def update_list(list_id):
 @list_blueprint.route("/lists/<list_id>/tasks", methods=["GET"])
 @login_required
 def get_tasks(list_id):
+    if not current_user.is_authenticated:
+        return jsonify({"message": "User is not authenticated"}), 401
     try:
         tasks = Task.query.filter_by(list_id=list_id).all()
         message = f"Successfully retrieved all tasks from list with id {list_id}."
@@ -141,6 +151,8 @@ def get_tasks(list_id):
 @list_blueprint.route("/lists/<list_id>/tasks", methods=["POST"])
 @login_required
 def create_task(list_id):
+    if not current_user.is_authenticated:
+        return jsonify({"message": "User is not authenticated"}), 401
     try:
         name = request.json.get("name")
         parent_id = None
@@ -164,7 +176,9 @@ def create_task(list_id):
 # modify a specific task in a specific list
 @list_blueprint.route("/lists/<list_id>/tasks/<task_id>", methods=["PUT"])
 @login_required
-def modify_task(list_id, task_id):
+def modify_task(task_id):
+    if not current_user.is_authenticated:
+        return jsonify({"message": "User is not authenticated"}), 401
     try:
         name = request.json.get("name")
         task = Task.query.get(task_id)
@@ -179,7 +193,9 @@ def modify_task(list_id, task_id):
 # delete a specific base task in a specific list
 @list_blueprint.route("/lists/<list_id>/tasks/<task_id>", methods=["DELETE"])
 @login_required
-def delete_task(list_id, task_id):
+def delete_task(task_id):
+    if not current_user.is_authenticated:
+        return jsonify({"message": "User is not authenticated"}), 401
     try:
         task = Task.query.get(task_id)
         for subtask in task.subtasks:
@@ -195,7 +211,9 @@ def delete_task(list_id, task_id):
 # move a specific task to a different list
 @list_blueprint.route("/lists/<list_id>/tasks/<task_id>/move", methods=["PUT"])
 @login_required
-def move_task(list_id, task_id):
+def move_task(task_id):
+    if not current_user.is_authenticated:
+        return jsonify({"message": "User is not authenticated"}), 401
     try:
         new_list_id = request.json.get("new_list_id")
         task = Task.query.get(task_id)
