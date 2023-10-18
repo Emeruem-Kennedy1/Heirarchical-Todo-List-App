@@ -16,11 +16,14 @@ export default class ListAppApiClient {
       response = await fetch(this.base_url + options.url + query, {
         method: options.method,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           ...options.headers,
         },
+        credentials: "include",
         body: options.body ? JSON.stringify(options.body) : null,
       });
+
+      console.log(response);
     }
     catch (error) {
       response = {
