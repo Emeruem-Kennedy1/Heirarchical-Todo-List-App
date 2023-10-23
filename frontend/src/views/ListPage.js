@@ -60,6 +60,8 @@ const ListPage = () => {
       hasSubtasks={task.subtasks.length > 0}
       taskID={task.id}
       onUpdateTasks={fetchList}
+      depth={task.task_depth}
+      currentListId={Number(listId)}
     >
       {task.subtasks.map((subtask) => renderTask(subtask))}
     </NestedAccordion>

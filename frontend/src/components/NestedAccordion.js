@@ -5,14 +5,14 @@ import {
   AccordionDetails,
   Typography,
   Checkbox,
-  Button,
   Box,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import { useApi } from "../contexts/ApiProvider";
-import DialogBox from "./DialogBox";
+import AddEditDialog from "./AddEditDialog";
+import MoveTaskDialog from "./MoveTaskDialog";
+import TaskActions from "./TaskActions";
+
 
 const NestedAccordion = ({
   title,
@@ -23,6 +23,8 @@ const NestedAccordion = ({
   hasSubtasks,
   taskID,
   onUpdateTasks,
+  depth,
+  currentListId,
 }) => {
   const api = useApi();
   const [completed, setCompleted] = useState(parentCompleted || false);
@@ -31,6 +33,31 @@ const NestedAccordion = ({
   const [subtaskName, setSubtaskName] = useState(""); // State to track the subtask name
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false); // State to track edit dialog open status
   const [editedSubtaskName, setEditedSubtaskName] = useState(title); // State to track the edited subtask name
+  const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
+  const [lists, setLists] = useState([]);
+
+  useEffect(() => {
+    const fetchLists = async () => {
+      try {
+        const response = await api.get("/lists");
+        setLists(response.body.lists);
+      } catch (error) {
+        console.error("Error fetching lists:", error);
+      }
+    };
+
+    fetchLists();
+  }, [api]);
+
+  const handleMoveTaskSubmit = async (selectedListId) => {
+    try {
+      await api.put(`/task/${taskID}/move`, { new_list_id: selectedListId });
+      setIsMoveDialogOpen(false);
+      onUpdateTasks();
+    } catch (error) {
+      console.error("Error moving task:", error);
+    }
+  };
 
   const handleToggleExpanded = (event, newExpanded) => {
     if (hasSubtasks) {
@@ -91,6 +118,14 @@ const NestedAccordion = ({
     }
   };
 
+  const handleMoveTask = async () => {
+    setIsMoveDialogOpen(true);
+  };
+
+  const handleDeleteTask = (id) => {
+    onDelete(id);
+  };
+
   return (
     <>
       <Accordion expanded={expanded} onChange={handleToggleExpanded}>
@@ -115,18 +150,14 @@ const NestedAccordion = ({
                 {title}
               </Typography>
             </Box>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              {canHaveSubtasks && (
-                <Button onClick={handleAddSubtask} size="small">
-                  Add Subtask
-                </Button>
-              )}
-              <Button onClick={handleEditSubtask} startIcon={<EditIcon />} />
-              <Button
-                onClick={() => onDelete(taskID)}
-                startIcon={<DeleteIcon />}
-              />
-            </Box>
+            <TaskActions
+              canHaveSubtasks={canHaveSubtasks}
+              handleAddSubtask={handleAddSubtask}
+              handleEditSubtask={handleEditSubtask}
+              handleDeleteTask={() => handleDeleteTask(taskID)}
+              handleMoveTask={handleMoveTask}
+              depth={depth}
+            />
           </Box>
         </AccordionSummary>
         <AccordionDetails>
@@ -138,19 +169,17 @@ const NestedAccordion = ({
           })}
         </AccordionDetails>
       </Accordion>
-      {canHaveSubtasks && (
-        <DialogBox
-          isOpen={isDialogOpen}
-          onClose={() => setIsDialogOpen(false)}
-          onSubmit={handleAddDialogSubmit}
-          name={subtaskName}
-          setName={setSubtaskName}
-          type="add"
-          label="Subtask Name"
-          title={`Add Subtask to ${title}`}
-        />
-      )}
-      <DialogBox
+      <AddEditDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onSubmit={handleAddDialogSubmit}
+        name={subtaskName}
+        setName={setSubtaskName}
+        type="add"
+        label="Subtask Name"
+        title={`Add Subtask to ${title}`}
+      />
+      <AddEditDialog
         isOpen={isEditDialogOpen}
         onClose={() => setIsEditDialogOpen(false)}
         onSubmit={handleEditDialogSubmit}
@@ -159,6 +188,13 @@ const NestedAccordion = ({
         type="edit"
         label="Subtask Name"
         title={`Edit ${title}`}
+      />
+      <MoveTaskDialog
+        isOpen={isMoveDialogOpen}
+        onClose={() => setIsMoveDialogOpen(false)}
+        lists={lists}
+        currentListId={currentListId}
+        handleMoveTaskSubmit={handleMoveTaskSubmit}
       />
     </>
   );
