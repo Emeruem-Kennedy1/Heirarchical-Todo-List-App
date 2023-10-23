@@ -217,24 +217,3 @@ def delete_task(task_id):
         return jsonify({"message": f"I deleted the task with id {task_id}"})
     except Exception as e:
         return jsonify({"message": f"Failed to delete the task. error is {e}"}), 400
-
-
-# move a specific task to a different list
-@list_blueprint.route("/lists/<list_id>/tasks/<task_id>/move", methods=["PUT"])
-@login_required
-def move_task(task_id):
-    if not current_user.is_authenticated:
-        return jsonify({"message": "User is not authenticated"}), 401
-    try:
-        new_list_id = request.json.get("new_list_id")
-        task = Task.query.get(task_id)
-        task.list_id = new_list_id
-        db.session.commit()
-
-        return jsonify(
-            {
-                "message": f"I moved the task with id {task_id} to list with id {new_list_id}"
-            }
-        )
-    except Exception as e:
-        return jsonify({"message": f"Failed to move the task. error is {e}"}), 400

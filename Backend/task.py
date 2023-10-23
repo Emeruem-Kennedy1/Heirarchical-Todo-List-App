@@ -135,3 +135,22 @@ def update_task_status(task_id):
                 "message": f"Failed to update status of task with id {task_id}. error is {e}"
             }
         )
+
+
+# move a specific task to a different list
+@task_blueprint.route("task/<task_id>/move", methods=["PUT"])
+@login_required
+def move_task(task_id):
+    try:
+        new_list_id = request.json.get("new_list_id")
+        task = Task.query.get(task_id)
+        task.list_id = new_list_id
+        db.session.commit()
+
+        return jsonify(
+            {
+                "message": f"I moved the task with id {task_id} to list with id {new_list_id}"
+            }
+        )
+    except Exception as e:
+        return jsonify({"message": f"Failed to move the task. error is {e}"}), 400
