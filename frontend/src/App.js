@@ -8,6 +8,8 @@ import ApiProvider from "./contexts/ApiProvider";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import NotFoundPage from "./views/NotFoundPage";
+import LoginPage from "./views/LoginPage";
+import SignupPage from "./views/SignUp";
 
 function App() {
   return (
@@ -20,7 +22,9 @@ function App() {
               <Route path="/" element={<ListsPage />} />
               <Route path="/list/:listId" element={<ListPage />} />
               <Route path="/lists" element={<ListsPage />} />
-              <Route path="*" element={<NotFoundPage/> } />
+              <Route path="*" element={<NotFoundPage />} />
+              <Route path="login" element={<LoginPage />} />
+              <Route path="signup" element={<SignupPage />} />
             </Routes>
             <Footer />
           </div>

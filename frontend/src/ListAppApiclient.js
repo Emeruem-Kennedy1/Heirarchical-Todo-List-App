@@ -1,10 +1,12 @@
+import { useNavigate } from "react-router-dom";
 const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
+
 
 export default class ListAppApiClient {
   constructor() {
     this.base_url =  BASE_API_URL + '/api';
   }
-
+  navigate = useNavigate();
   async request(options) {
     let query = new URLSearchParams(options.query || {}).toString();
     if (query !== '') {
@@ -23,7 +25,9 @@ export default class ListAppApiClient {
         body: options.body ? JSON.stringify(options.body) : null,
       });
 
-      console.log(response);
+      if (response.status === 401) {
+        this.navigate('/login');
+      }
     }
     catch (error) {
       response = {

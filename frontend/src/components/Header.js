@@ -10,15 +10,35 @@ import Grid from "@mui/material/Grid";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import { useApi } from "../contexts/ApiProvider";
 
 const Header = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
+  const api = useApi();
 
   const gotoHome = () => {
     navigate("/");
-  }
+  };
+
+  // get username from local storage
+  const username = localStorage.getItem("username");
+
+  const handleLogout = () => {
+    api
+      .post("/logout")
+      .then((response) => {
+        if (response.status === 200) {
+          localStorage.removeItem("username");
+          localStorage.removeItem("isLoggedIn");
+          navigate("/login");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
     <AppBar position="sticky">
@@ -42,13 +62,16 @@ const Header = () => {
               <AccountCircle fontSize="large" />
               {!isMobile && (
                 <Typography variant="body1" sx={{ marginLeft: 1 }}>
-                  User Name
+                  {username ? username : "Guest"}
                 </Typography>
               )}
               <Button
                 color="inherit"
                 startIcon={<LogoutIcon />}
                 sx={{ marginLeft: 2 }}
+                onClick={() => {
+                  handleLogout();
+                }}
               >
                 Logout
               </Button>
