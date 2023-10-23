@@ -8,11 +8,11 @@ import {
   Box,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useApi } from "../contexts/ApiProvider";
 import AddEditDialog from "./AddEditDialog";
 import MoveTaskDialog from "./MoveTaskDialog";
 import TaskActions from "./TaskActions";
-
+import useApiTasks from "../hooks/useApiTasks";
+import { useApi } from "../contexts/ApiProvider";
 
 const NestedAccordion = ({
   title,
@@ -36,6 +36,8 @@ const NestedAccordion = ({
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
   const [lists, setLists] = useState([]);
 
+  const {addSubtask, editSubtask, moveTask } = useApiTasks();
+
   useEffect(() => {
     const fetchLists = async () => {
       try {
@@ -49,21 +51,31 @@ const NestedAccordion = ({
     fetchLists();
   }, [api]);
 
+
+  const handleAddDialogSubmit = async () => {
+    await addSubtask(taskID, subtaskName);
+    setIsDialogOpen(false);
+    onUpdateTasks();
+    setSubtaskName("");
+  };
+
+  const handleEditDialogSubmit = async () => {
+    await editSubtask(taskID, editedSubtaskName);
+    setIsEditDialogOpen(false);
+    onUpdateTasks();
+  };
+
   const handleMoveTaskSubmit = async (selectedListId) => {
-    try {
-      await api.put(`/task/${taskID}/move`, { new_list_id: selectedListId });
-      setIsMoveDialogOpen(false);
-      onUpdateTasks();
-    } catch (error) {
-      console.error("Error moving task:", error);
-    }
+    await moveTask(taskID, selectedListId);
+    setIsMoveDialogOpen(false);
+    onUpdateTasks();
   };
 
   const handleToggleExpanded = (event, newExpanded) => {
     if (hasSubtasks) {
       setExpanded(newExpanded);
     } else {
-      event.stopPropagation(); // Prevent expansion if there are no subtasks
+      event.stopPropagation();
     }
   };
 
@@ -78,22 +90,6 @@ const NestedAccordion = ({
     }
   }, [parentCompleted]);
 
-  const handleAddDialogSubmit = async () => {
-    try {
-      await api.post(`/task/${taskID}/subtasks`, { name: subtaskName });
-
-      setIsDialogOpen(false);
-
-      // Update the lists after successful update
-      onUpdateTasks();
-
-      // Reset the subtask name
-      setSubtaskName("");
-    } catch (error) {
-      console.error("Error updating list:", error);
-    }
-  };
-
   const handleAddSubtask = (e) => {
     e.stopPropagation();
     setIsDialogOpen(true);
@@ -102,20 +98,6 @@ const NestedAccordion = ({
   const handleEditSubtask = (e) => {
     e.stopPropagation();
     setIsEditDialogOpen(true);
-  };
-
-  const handleEditDialogSubmit = async () => {
-    try {
-      // Make a PUT request to update the subtask name
-      await api.put(`/task/${taskID}`, { name: editedSubtaskName });
-
-      setIsEditDialogOpen(false);
-
-      // Update the tasks after successful update
-      onUpdateTasks();
-    } catch (error) {
-      console.error("Error updating subtask:", error);
-    }
   };
 
   const handleMoveTask = async () => {
