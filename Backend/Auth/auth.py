@@ -14,7 +14,6 @@ def login():
         password = request.json.get("password")
 
         user = User.query.filter_by(email=email).first()
-        print(user)
 
         if not user:
             return jsonify({"message": "User does not exist"}), 401
@@ -22,6 +21,7 @@ def login():
         if not check_password_hash(user.password_hash, password):
             return jsonify({"message": "Invalid username or password"}), 401
         login_user(user)
+        print("logged in")
         return (
             jsonify({"message": "Successfully logged in", "user": user.to_dict()}),
             200,

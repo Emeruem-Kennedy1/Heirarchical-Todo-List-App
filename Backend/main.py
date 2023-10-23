@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify  # noqa
 from flask_cors import CORS
-from List.list import list_blueprint  # noqa
-from Task.task import task_blueprint  # noqa
+from list import list_blueprint  # noqa
+from task import task_blueprint  # noqa
 from extensions import db  # noqa
 from flask_login import LoginManager  # noqa
 from Auth.auth import auth_bp  # noqa
@@ -14,9 +14,9 @@ app.register_blueprint(task_blueprint, url_prefix="/api")
 app.register_blueprint(auth_bp, url_prefix="/api")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///hierarchy.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config['SESSION_COOKIE_SAMESITE'] = "None"
-app.config['SESSION_COOKIE_SECURE'] = True
-app.secret_key = 'kendo'
+app.config["SESSION_COOKIE_SAMESITE"] = "None"
+app.config["SESSION_COOKIE_SECURE"] = True
+app.secret_key = "kendo"
 db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)

@@ -17,13 +17,20 @@ def get_all_lists():
     failure_message = "Failed to retrieve all lists from the database."
     success_status = 200
     try:
-        lists = List.query.all()
+        print(current_user.id)
+        lists = List.query.filter_by(user_id=current_user.id).all()
 
         return (
             jsonify(
                 {
                     "message": success_message,
-                    "lists": [list.to_dict() for list in lists],
+                    "lists": [
+                        {
+                            "id": list.id,
+                            "name": list.name,
+                        }
+                        for list in lists
+                    ],
                 }
             ),
             success_status,
@@ -38,12 +45,15 @@ def get_all_lists():
 def get_list(list_id):
     if not current_user.is_authenticated:
         return jsonify({"message": "User is not authenticated"}), 401
+
     success_message = f"Successfully retrieved list with id {list_id}."
     failure_message = f"Failed to retrieve list with id {list_id}."
     status = 200
 
     try:
         list = List.query.get(list_id)
+        if current_user.id != list.user_id:
+            return jsonify({"message": "User is not authorized to view this list"}), 401
         return jsonify({"message": success_message, "list": list.to_dict()}), status
     except Exception as e:
         return jsonify({"message": f"{failure_message}. error is {e}"}), 400
@@ -57,11 +67,12 @@ def create_list():
         return jsonify({"message": "User is not authenticated"}), 401
     try:
         name = request.json.get("name")
+        user_id = current_user.id
 
         sucess_message = f"Successfully created a new list with name {name}."
         success_status = 201
 
-        list = List(name=name)
+        list = List(name=name, user_id=user_id)
         db.session.add(list)
         db.session.commit()
 

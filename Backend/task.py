@@ -110,3 +110,28 @@ def delete_task(task_id):
         return jsonify(
             {"message": f"Failed to delete task with id {task_id}. error is {e}"}
         )
+
+
+@task_blueprint.route("/task/<task_id>/status", methods=["PUT"])
+@login_required
+def update_task_status(task_id):
+    try:
+        task = Task.query.get(task_id)
+        task.status = not task.status
+        if task.status:
+            for subtask in task.subtasks:
+                subtask.status = True
+        db.session.commit()
+
+        return jsonify(
+            {
+                "message": f"Successfully updated status of task with id {task_id}.",
+                "task": task.to_dict(),
+            }
+        )
+    except Exception as e:
+        return jsonify(
+            {
+                "message": f"Failed to update status of task with id {task_id}. error is {e}"
+            }
+        )
