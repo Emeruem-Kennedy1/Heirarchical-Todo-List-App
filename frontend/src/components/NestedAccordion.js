@@ -11,9 +11,8 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import AddSubtaskDialog from "./AddSubtaskDialog";
 import { useApi } from "../contexts/ApiProvider";
-import EditSubtaskDialog from "./EditSubtaskDialog";
+import DialogBox from "./DialogBox";
 
 const NestedAccordion = ({
   title,
@@ -52,7 +51,7 @@ const NestedAccordion = ({
     }
   }, [parentCompleted]);
 
-  const handleDialogSubmit = async () => {
+  const handleAddDialogSubmit = async () => {
     try {
       await api.post(`/task/${taskID}/subtasks`, { name: subtaskName });
 
@@ -87,9 +86,6 @@ const NestedAccordion = ({
 
       // Update the tasks after successful update
       onUpdateTasks();
-
-      // Reset the edited subtask name
-      setEditedSubtaskName("");
     } catch (error) {
       console.error("Error updating subtask:", error);
     }
@@ -143,20 +139,26 @@ const NestedAccordion = ({
         </AccordionDetails>
       </Accordion>
       {canHaveSubtasks && (
-        <AddSubtaskDialog
+        <DialogBox
           isOpen={isDialogOpen}
           onClose={() => setIsDialogOpen(false)}
-          onSubmit={handleDialogSubmit}
-          subtaskName={subtaskName}
-          setSubtaskName={setSubtaskName}
+          onSubmit={handleAddDialogSubmit}
+          name={subtaskName}
+          setName={setSubtaskName}
+          type="add"
+          label="Subtask Name"
+          title={`Add Subtask to ${title}`}
         />
       )}
-      <EditSubtaskDialog
+      <DialogBox
         isOpen={isEditDialogOpen}
         onClose={() => setIsEditDialogOpen(false)}
         onSubmit={handleEditDialogSubmit}
-        editedSubtaskName={editedSubtaskName}
-        setEditedSubtaskName={setEditedSubtaskName}
+        name={editedSubtaskName}
+        setName={setEditedSubtaskName}
+        type="edit"
+        label="Subtask Name"
+        title={`Edit ${title}`}
       />
     </>
   );

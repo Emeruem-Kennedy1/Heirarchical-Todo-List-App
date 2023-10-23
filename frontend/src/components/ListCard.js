@@ -5,7 +5,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "../contexts/ApiProvider";
-import EditListDialog from "./EditListDialog";
+import DialogBox from "./DialogBox";
 
 const ListCard = ({ list_id, list_name, onUpdateLists }) => {
   const navigate = useNavigate();
@@ -112,12 +112,15 @@ const ListCard = ({ list_id, list_name, onUpdateLists }) => {
         </>
       )}
 
-      <EditListDialog
+      <DialogBox
         isOpen={isEditOpen}
         onClose={handleEditDialogClose}
         onSubmit={handleEditSubmit}
-        editedName={editedName}
-        setEditedName={setEditedName}
+        name={editedName}
+        setName={setEditedName}
+        type="edit"
+        label="List Name"
+        title={`Edit ${list_name}`}
       />
     </Box>
   );

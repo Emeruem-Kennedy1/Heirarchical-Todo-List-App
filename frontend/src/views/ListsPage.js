@@ -33,7 +33,11 @@ const ListsPage = () => {
         <Box display="flex" justifyContent="center" flexWrap="wrap" padding={2}>
           {lists.map((list) => (
             <Box key={list.id} margin={1}>
-              <ListCard list_id={list.id} list_name={list.name} onUpdateLists={updateLists} />
+              <ListCard
+                list_id={list.id}
+                list_name={list.name}
+                onUpdateLists={updateLists}
+              />
             </Box>
           ))}
         </Box>

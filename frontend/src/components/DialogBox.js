@@ -6,14 +6,17 @@ import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 
-const AddSubtaskDialog = ({
+const DialogBox = ({
   isOpen,
   onClose,
   onSubmit,
-  subtaskName,
-  setSubtaskName,
+  name,
+  setName,
+  title,
+  type,
+  label
 }) => {
-  const handleAddSubmit = (e) => {
+  const handleEditSubmit = (e) => {
     e.preventDefault();
     onSubmit();
   };
@@ -25,14 +28,14 @@ const AddSubtaskDialog = ({
 
   return (
     <Dialog open={isOpen} onClose={onClose} onClick={handleDialogClick}>
-      <DialogTitle>Add Subtask</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <TextField
-          label="Subtask Name"
+          label={label}
           variant="outlined"
           fullWidth
-          value={subtaskName}
-          onChange={(e) => setSubtaskName(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           sx={{ marginTop: 2 }}
         />
       </DialogContent>
@@ -41,15 +44,15 @@ const AddSubtaskDialog = ({
           Cancel
         </Button>
         <Button
-          onClick={handleAddSubmit}
+          onClick={handleEditSubmit}
           color="primary"
-          disabled={!subtaskName} // Disable if subtaskName is empty
+          disabled={!name} // Disable if name is empty
         >
-          Add
+          {type === "edit" ? "Save" : "Add"}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default AddSubtaskDialog;
+export default DialogBox;
