@@ -112,15 +112,35 @@ def delete_task(task_id):
         )
 
 
+def update_subtasks_status(task, status):
+    """Recursively update the status of subtasks."""
+    for subtask in task.subtasks:
+        subtask.status = status
+        update_subtasks_status(subtask, status)
+
+
 @task_blueprint.route("/task/<task_id>/status", methods=["PUT"])
 @login_required
 def update_task_status(task_id):
     try:
         task = Task.query.get(task_id)
-        task.status = not task.status
-        if task.status:
-            for subtask in task.subtasks:
-                subtask.status = True
+        new_status = not task.status
+        task.status = new_status
+
+        # If a task is marked as complete
+        if new_status:
+            update_subtasks_status(task, True)
+
+        # If a child task is marked as incomplete
+        elif not new_status and task.parent:
+            task.parent.status = False
+
+        # Check if all siblings (including the task itself) are complete
+        siblings = Task.query.filter_by(parent_id=task.parent_id).all()
+        if all(sibling.status for sibling in siblings) and task.parent:
+            task.parent.status = True
+
+        # Commit all changes in a single transaction
         db.session.commit()
 
         return jsonify(
