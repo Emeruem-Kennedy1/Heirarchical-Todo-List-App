@@ -10,6 +10,9 @@ const ListPage = () => {
   const api = useApi();
   const [tasks, setTasks] = useState([]);
   const [listName, setListName] = useState("");
+  const [expandedTasks, setExpandedTasks] = useState([]);
+  const [forceUpdate, setForceUpdate] = useState(0);
+
 
   const fetchList = useCallback(async () => {
     try {
@@ -17,6 +20,7 @@ const ListPage = () => {
       const list = data.body.list;
       setTasks(list.tasks);
       setListName(list.name);
+      setForceUpdate((prev) => prev + 1);
     } catch (error) {
       console.error("Error fetching list:", error);
     }
@@ -62,23 +66,38 @@ const ListPage = () => {
       onUpdateTasks={fetchList}
       depth={task.task_depth}
       currentListId={Number(listId)}
+      status={task.status}
+      isExpanded={expandedTasks.includes(task.id)}
+      onToggleExpanded={(taskId, isExpanded) => {
+        if (isExpanded) {
+          setExpandedTasks((prev) => [...prev, taskId]);
+        } else {
+          setExpandedTasks((prev) => prev.filter((id) => id !== taskId));
+        }
+      }}
     >
       {task.subtasks.map((subtask) => renderTask(subtask))}
     </NestedAccordion>
   );
 
   return (
-    <Container sx={{
-      height: "100vh",
-    }}>
-      <Typography variant="h4" align="center" sx={{
-        marginTop: "5%",
-        marginBottom: "5%",
-      }}>
+    <Container
+      sx={{
+        height: "100vh",
+      }}
+    >
+      <Typography
+        variant="h4"
+        align="center"
+        sx={{
+          marginTop: "5%",
+          marginBottom: "5%",
+        }}
+      >
         {listName}
       </Typography>
       <AddTaskForm onAddTask={handleAddTask} />
-      <div style={{ width: "80%", margin: "20px auto" }}>
+      <div key={forceUpdate} style={{ width: "80%", margin: "20px auto" }}>
         {tasks.map((task) => renderTask(task))}
       </div>
     </Container>

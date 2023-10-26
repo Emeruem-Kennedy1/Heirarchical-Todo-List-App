@@ -28,10 +28,19 @@ const useApiTasks = () => {
     }
   };
 
+  const changeStatus = async (taskId, status) => {
+    try {
+      await api.put(`/task/${taskId}/status`, { status: status });
+    } catch (error) {
+      console.error("Error changing status:", error);
+    }
+  };
+
   return {
     addSubtask,
     editSubtask,
     moveTask,
+    changeStatus,
   };
 };
 

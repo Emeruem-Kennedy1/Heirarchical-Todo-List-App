@@ -18,17 +18,19 @@ const NestedAccordion = ({
   title,
   onDelete,
   children,
-  parentCompleted,
   canHaveSubtasks,
   hasSubtasks,
   taskID,
   onUpdateTasks,
   depth,
   currentListId,
+  status,
+  isExpanded,
+  onToggleExpanded,
 }) => {
   const api = useApi();
-  const [completed, setCompleted] = useState(parentCompleted || false);
-  const [expanded, setExpanded] = useState(false);
+  const [completed, setCompleted] = useState(status || false);
+  const [expanded, setExpanded] = useState(isExpanded);
   const [isDialogOpen, setIsDialogOpen] = useState(false); // State to track dialog open status
   const [subtaskName, setSubtaskName] = useState(""); // State to track the subtask name
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false); // State to track edit dialog open status
@@ -36,7 +38,7 @@ const NestedAccordion = ({
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
   const [lists, setLists] = useState([]);
 
-  const {addSubtask, editSubtask, moveTask } = useApiTasks();
+  const { addSubtask, editSubtask, moveTask } = useApiTasks();
 
   useEffect(() => {
     const fetchLists = async () => {
@@ -50,7 +52,6 @@ const NestedAccordion = ({
 
     fetchLists();
   }, [api]);
-
 
   const handleAddDialogSubmit = async () => {
     await addSubtask(taskID, subtaskName);
@@ -79,16 +80,17 @@ const NestedAccordion = ({
     }
   };
 
-  const handleToggleCompleted = (e) => {
+  const handleToggleCompleted = async (e) => {
     e.stopPropagation();
-    setCompleted((prev) => !prev);
-  };
-
-  useEffect(() => {
-    if (parentCompleted !== undefined) {
-      setCompleted(parentCompleted);
+    try {
+      await api.put(`/task/${taskID}/status`);
+      setCompleted((prev) => !prev);
+      onUpdateTasks(); // Refresh the list after updating the task status
+      console.log("Task status updated");
+    } catch (error) {
+      console.error("Error updating task status:", error);
     }
-  }, [parentCompleted]);
+  };
 
   const handleAddSubtask = (e) => {
     e.stopPropagation();
@@ -110,7 +112,13 @@ const NestedAccordion = ({
 
   return (
     <>
-      <Accordion expanded={expanded} onChange={handleToggleExpanded}>
+      <Accordion
+        expanded={expanded}
+        onChange={(event, newExpanded) => {
+          onToggleExpanded(taskID, newExpanded);
+          handleToggleExpanded(event, newExpanded);
+        }}
+      >
         <AccordionSummary expandIcon={hasSubtasks ? <ExpandMoreIcon /> : null}>
           <Box
             sx={{
@@ -121,11 +129,7 @@ const NestedAccordion = ({
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Checkbox
-                checked={completed}
-                onChange={handleToggleCompleted}
-                onClick={(e) => e.stopPropagation()}
-              />
+              <Checkbox checked={completed} onClick={handleToggleCompleted} />
               <Typography
                 style={{ textDecoration: completed ? "line-through" : "none" }}
               >
@@ -142,14 +146,11 @@ const NestedAccordion = ({
             />
           </Box>
         </AccordionSummary>
-        <AccordionDetails>
-          {React.Children.map(children, (child) => {
-            if (React.isValidElement(child)) {
-              return React.cloneElement(child, { parentCompleted: completed });
-            }
-            return child;
-          })}
-        </AccordionDetails>
+        {hasSubtasks && (
+          <AccordionDetails style={{ padding: hasSubtasks ? undefined : "0" }}>
+            {children}
+          </AccordionDetails>
+        )}
       </Accordion>
       <AddEditDialog
         isOpen={isDialogOpen}
