@@ -13,7 +13,7 @@ const NotFoundPage = () => {
   return (
     <Container
       sx={{
-        height: "100vh",
+        height: "60vh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -23,7 +23,7 @@ const NotFoundPage = () => {
     >
       <Typography
         sx={{
-          fontSize: "4rem",
+          fontSize: "6rem",
           fontWeight: "bold",
           marginBottom: theme.spacing(2),
         }}
@@ -33,7 +33,7 @@ const NotFoundPage = () => {
       </Typography>
       <Typography
         sx={{
-          fontSize: "1.5rem",
+          fontSize: "2rem",
           marginBottom: theme.spacing(4),
         }}
         color="textSecondary"

@@ -43,6 +43,7 @@ const AddListForm = ({ onUpdateLists }) => {
           value={listName}
           onChange={handleInputChange}
           style={{ marginBottom: 16 }}
+          name="listname"
         />
         <Button
           type="submit"

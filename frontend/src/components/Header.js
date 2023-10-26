@@ -47,7 +47,7 @@ const Header = () => {
           <Box>
             <Button onClick={gotoHome} color="inherit" disableRipple>
               <Typography
-                variant="h6"
+                variant="h5"
                 component="div"
                 fontFamily="Public Sans"
                 fontWeight={900}

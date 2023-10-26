@@ -1,37 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "../contexts/ApiProvider";
 import DialogBox from "./DialogBox";
 
 const ListCard = ({ list_id, list_name, onUpdateLists }) => {
   const navigate = useNavigate();
+  const api = useApi();
   const [isHovered, setIsHovered] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editedName, setEditedName] = useState(list_name);
-  const api = useApi();
+  const [showIcons, setShowIcons] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
-  const handleCardClick = () => {
-    navigate(`/list/${list_id}`);
+  useEffect(() => {
+    const match = window.matchMedia("(pointer: coarse)").matches;
+    setIsTouchDevice(match);
+  }, []);
+
+  const handleCardClick = (e) => {
+    if (!e.target.closest(".iconButton")) {
+      navigate(`/list/${list_id}`);
+    }
   };
 
   const handleDeleteClick = async (e) => {
-    // Stop propagation to prevent the card click event when clicking on the edit button
     e.stopPropagation();
-    // Handle the edit action here
     try {
-      // Make a DELETE request to delete the list
       await api.delete(`/lists/${list_id}`);
-
-      // Update the lists after successful deletion
       onUpdateLists();
     } catch (error) {
       console.error("Error deleting list:", error);
     }
-    // You can navigate to the edit page or trigger an edit function
   };
 
   const handleEditClick = (e) => {
@@ -45,13 +49,9 @@ const ListCard = ({ list_id, list_name, onUpdateLists }) => {
 
   const handleEditSubmit = async (e) => {
     try {
-      // Make a PUT request to update the list name
       await api.put(`/lists/${list_id}`, { name: editedName });
-
-      // Update the lists after successful update
       onUpdateLists();
       setIsEditOpen(false);
-      setIsHovered(false);
     } catch (error) {
       console.error("Error updating list:", error);
     }
@@ -72,12 +72,15 @@ const ListCard = ({ list_id, list_name, onUpdateLists }) => {
         color: "white",
         "&:hover": {
           backgroundColor: "#333",
-          ".closeButton": {
+          ".iconButton": {
             opacity: 1,
           },
-          ".editButton": {
-            opacity: 1,
-          },
+        },
+        ".toggleButton": {
+          display: isTouchDevice ? "block" : "none",
+        },
+        ".iconButton": {
+          opacity: showIcons ? 1 : 0,
         },
       }}
       onClick={handleCardClick}
@@ -87,24 +90,39 @@ const ListCard = ({ list_id, list_name, onUpdateLists }) => {
       <Typography variant="h6" align="center">
         {list_name}
       </Typography>
+
+      <MoreVertIcon
+        className="toggleButton"
+        sx={{
+          position: "absolute",
+          top: "10px",
+          left: "10px",
+          cursor: "pointer",
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowIcons(!showIcons);
+        }}
+      />
+
       {isHovered && (
         <>
           <DeleteIcon
+            className="iconButton"
             sx={{
               position: "absolute",
               top: "10px",
               right: "40px",
-              opacity: 0.7,
               cursor: "pointer",
             }}
             onClick={handleDeleteClick}
           />
           <EditIcon
+            className="iconButton"
             sx={{
               position: "absolute",
               top: "10px",
               right: "10px",
-              opacity: 0.7,
               cursor: "pointer",
             }}
             onClick={handleEditClick}

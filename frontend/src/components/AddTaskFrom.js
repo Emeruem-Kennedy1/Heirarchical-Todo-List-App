@@ -23,6 +23,7 @@ const AddTaskForm = ({ onAddTask }) => {
           value={taskName}
           onChange={(event) => setTaskName(event.target.value)}
           sx={{ marginBottom: 2 }}
+          name="taskname"
         />
         <Button type="submit" variant="contained" color="primary" disabled={!taskName}>
           Add Task

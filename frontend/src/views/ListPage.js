@@ -15,7 +15,6 @@ const ListPage = () => {
 
 
   const fetchList = useCallback(async () => {
-    console.log("API Call: fetchList");
     try {
       const data = await api.get(`/lists/${listId}`);
       const list = data.body.list;
@@ -84,7 +83,8 @@ const ListPage = () => {
   return (
     <Container
       sx={{
-        height: "100vh",
+        height: "100%",
+        marginBottom: "10vh",
       }}
     >
       <Typography

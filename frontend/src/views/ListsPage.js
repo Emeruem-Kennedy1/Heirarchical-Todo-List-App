@@ -10,6 +10,7 @@ const ListsPage = () => {
 
   const updateLists = useCallback(() => {
     api.get("/lists").then((response) => {
+      if (!response.ok) return console.error("Error fetching lists:", response);
       setLists(response.body.lists);
       // store the lists in the local storage
       localStorage.setItem("lists", JSON.stringify(response.body.lists));

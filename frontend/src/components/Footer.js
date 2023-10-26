@@ -11,14 +11,14 @@ const Footer = () => {
     <Box
       sx={{
         backgroundColor: "#f7f7f7",
-        py: 3,
-        position: "sticky",
+        py: 2,
+        position: "fixed",
         bottom: 0,
         width: "100%",
       }}
     >
       <Container maxWidth="lg">
-        <Typography variant="body2" color="textSecondary" align="center">
+        <Typography variant="body1" color="textSecondary" align="center">
           © Kendo {currentYear}
         </Typography>
       </Container>
