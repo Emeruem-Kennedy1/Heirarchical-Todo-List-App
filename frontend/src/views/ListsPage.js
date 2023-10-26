@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import ListCard from "../components/ListCard";
 import { useApi } from "../contexts/ApiProvider";
 import Box from "@mui/material/Box";
@@ -11,10 +11,12 @@ const ListsPage = () => {
   const updateLists = useCallback(() => {
     api.get("/lists").then((response) => {
       setLists(response.body.lists);
+      // store the lists in the local storage
+      localStorage.setItem("lists", JSON.stringify(response.body.lists));
     });
   }, [api]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     updateLists();
   }, [updateLists]);
 

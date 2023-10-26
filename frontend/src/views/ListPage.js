@@ -15,6 +15,7 @@ const ListPage = () => {
 
 
   const fetchList = useCallback(async () => {
+    console.log("API Call: fetchList");
     try {
       const data = await api.get(`/lists/${listId}`);
       const list = data.body.list;

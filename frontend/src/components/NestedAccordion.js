@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import {
   Accordion,
   AccordionSummary,
@@ -36,22 +36,10 @@ const NestedAccordion = ({
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false); // State to track edit dialog open status
   const [editedSubtaskName, setEditedSubtaskName] = useState(title); // State to track the edited subtask name
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
-  const [lists, setLists] = useState([]);
+  const [lists, ] = useState(JSON.parse(localStorage.getItem("lists") || [])
+  );
 
   const { addSubtask, editSubtask, moveTask } = useApiTasks();
-
-  useEffect(() => {
-    const fetchLists = async () => {
-      try {
-        const response = await api.get("/lists");
-        setLists(response.body.lists);
-      } catch (error) {
-        console.error("Error fetching lists:", error);
-      }
-    };
-
-    fetchLists();
-  }, [api]);
 
   const handleAddDialogSubmit = async () => {
     await addSubtask(taskID, subtaskName);
