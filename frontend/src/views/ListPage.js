@@ -54,6 +54,17 @@ const ListPage = () => {
     [api, fetchList, listId]
   );
 
+  const toogleExpanded = (taskId, isExpanded) => {
+    const task = tasks.find((t) => t.id === taskId);
+    if (task && task.subtasks && task.subtasks.length > 0) {
+      if (isExpanded) {
+        setExpandedTasks((prev) => [...prev, taskId]);
+      } else {
+        setExpandedTasks((prev) => prev.filter((id) => id !== taskId));
+      }
+    }
+  };
+
   const renderTask = (task) => (
     <NestedAccordion
       key={task.id}
@@ -68,13 +79,7 @@ const ListPage = () => {
       currentListId={Number(listId)}
       status={task.status}
       isExpanded={expandedTasks.includes(task.id)}
-      onToggleExpanded={(taskId, isExpanded) => {
-        if (isExpanded) {
-          setExpandedTasks((prev) => [...prev, taskId]);
-        } else {
-          setExpandedTasks((prev) => prev.filter((id) => id !== taskId));
-        }
-      }}
+      onToggleExpanded={toogleExpanded}
     >
       {task.subtasks.map((subtask) => renderTask(subtask))}
     </NestedAccordion>

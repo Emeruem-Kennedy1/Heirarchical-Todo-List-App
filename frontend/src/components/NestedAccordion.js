@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import {
   Accordion,
   AccordionSummary,
@@ -36,8 +36,7 @@ const NestedAccordion = ({
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false); // State to track edit dialog open status
   const [editedSubtaskName, setEditedSubtaskName] = useState(title); // State to track the edited subtask name
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
-  const [lists, ] = useState(JSON.parse(localStorage.getItem("lists") || [])
-  );
+  const [lists] = useState(JSON.parse(localStorage.getItem("lists") || []));
 
   const { addSubtask, editSubtask, moveTask } = useApiTasks();
 
