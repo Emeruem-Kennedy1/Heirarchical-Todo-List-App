@@ -1,4 +1,3 @@
-import "./App.css";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import ListPage from "./views/ListPage";
