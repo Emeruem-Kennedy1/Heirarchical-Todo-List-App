@@ -64,6 +64,7 @@ const NestedAccordion = ({
       setExpanded(newExpanded);
     } else {
       event.stopPropagation();
+      event.preventDefault();
     }
   };
 
@@ -89,8 +90,9 @@ const NestedAccordion = ({
     setIsEditDialogOpen(true);
   };
 
-  const handleMoveTask = async () => {
+  const handleMoveTask = async (e) => {
     setIsMoveDialogOpen(true);
+    e.stopPropagation();
   };
 
   const handleDeleteTask = (id) => {

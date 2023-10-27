@@ -13,7 +13,6 @@ const ListPage = () => {
   const [expandedTasks, setExpandedTasks] = useState([]);
   const [forceUpdate, setForceUpdate] = useState(0);
 
-
   const fetchList = useCallback(async () => {
     try {
       const data = await api.get(`/lists/${listId}`);
@@ -54,8 +53,25 @@ const ListPage = () => {
     [api, fetchList, listId]
   );
 
+  const findTaskInNested = (tasks, taskId) => {
+    let found = null;
+    for (let task of tasks) {
+      if (task.id === taskId) {
+        return task;
+      }
+      if (task.subtasks && task.subtasks.length > 0) {
+        found = findTaskInNested(task.subtasks, taskId);
+        if (found) {
+          break;
+        }
+      }
+    }
+    return found;
+  };
+
   const toogleExpanded = (taskId, isExpanded) => {
-    const task = tasks.find((t) => t.id === taskId);
+    const task = findTaskInNested(tasks, taskId);
+    console.log(expandedTasks, taskId);
     if (task && task.subtasks && task.subtasks.length > 0) {
       if (isExpanded) {
         setExpandedTasks((prev) => [...prev, taskId]);

@@ -41,7 +41,7 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="sticky">
+    <AppBar position="fixed">
       <Toolbar>
         <Grid container justifyContent="space-between" alignItems="center">
           <Box>

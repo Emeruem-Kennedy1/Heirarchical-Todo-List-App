@@ -3,7 +3,7 @@ import {
   Dialog,
   DialogTitle,
   List,
-  ListItem,
+  ListItemButton,
   ListItemText,
 } from "@mui/material";
 
@@ -21,12 +21,12 @@ const MoveTaskDialog = ({
         {lists
           .filter((list) => list.id !== currentListId)
           .map((list) => (
-            <ListItem
+            <ListItemButton
               key={list.id}
               onClick={() => handleMoveTaskSubmit(list.id)}
             >
               <ListItemText primary={list.name} />
-            </ListItem>
+            </ListItemButton>
           ))}
       </List>
     </Dialog>
