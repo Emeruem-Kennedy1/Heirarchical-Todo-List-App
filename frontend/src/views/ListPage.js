@@ -71,7 +71,6 @@ const ListPage = () => {
 
   const toogleExpanded = (taskId, isExpanded) => {
     const task = findTaskInNested(tasks, taskId);
-    console.log(expandedTasks, taskId);
     if (task && task.subtasks && task.subtasks.length > 0) {
       if (isExpanded) {
         setExpandedTasks((prev) => [...prev, taskId]);

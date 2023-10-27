@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, TextField, Container, Typography, Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useApi } from "../contexts/ApiProvider";
 
 function LoginPage() {
@@ -26,7 +26,6 @@ function LoginPage() {
         password: password,
       });
 
-      console.log(response);
 
       if (response.status === 200) {
         const username = response.body.user.username; // Note: changed from response.body to response.data
@@ -103,6 +102,15 @@ function LoginPage() {
             Sign In
           </Button>
         </Box>
+        <Typography>
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            style={{ textDecoration: "none", color: "blue" }}
+          >
+            Sign Up
+          </Link>
+        </Typography>
       </Box>
     </Container>
   );

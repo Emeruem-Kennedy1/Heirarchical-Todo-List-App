@@ -74,7 +74,6 @@ const NestedAccordion = ({
       await api.put(`/task/${taskID}/status`);
       setCompleted((prev) => !prev);
       onUpdateTasks(); // Refresh the list after updating the task status
-      console.log("Task status updated");
     } catch (error) {
       console.error("Error updating task status:", error);
     }
