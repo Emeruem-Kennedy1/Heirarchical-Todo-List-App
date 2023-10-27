@@ -15,9 +15,8 @@ def get_all_lists():
         return jsonify({"message": "User is not authenticated"}), 401
 
     try:
-        print(current_user.id)
-        lists = List.query.filter_by(user_id=current_user.id).all()
-
+        lists = db.session.query(List).filter_by(user_id=current_user.id).all()
+        # lists = db.session.scalars(select(List).filter_by(user_id=current_user.id)).all()
         return (
             jsonify(
                 {
@@ -52,7 +51,7 @@ def get_list(list_id):
         return jsonify({"message": "User is not authenticated"}), 401
 
     try:
-        list = List.query.get(list_id)
+        list = db.session.get(List, list_id)
         if current_user.id != list.user_id:
             return jsonify({"message": "User is not authorized to view this list"}), 401
         return (
@@ -110,9 +109,9 @@ def delete_list(list_id):
     if not current_user.is_authenticated:
         return jsonify({"message": "User is not authenticated"}), 401
     try:
-        list = List.query.get(list_id)
+        list = db.session.get(List, list_id)
         # check if the list has any tasks and delete them
-        tasks = Task.query.filter_by(list_id=list_id).all()
+        tasks = db.session.get(List, list_id).tasks
         for task in tasks:
             db.session.delete(task)
 
@@ -143,7 +142,7 @@ def update_list(list_id):
         return jsonify({"message": "User is not authenticated"}), 401
     try:
         name = request.json.get("name")
-        list = List.query.get(list_id)
+        list = db.session.get(List, list_id)
         list.name = name
         db.session.commit()
 
@@ -170,7 +169,7 @@ def get_tasks(list_id):
     if not current_user.is_authenticated:
         return jsonify({"message": "User is not authenticated"}), 401
     try:
-        tasks = Task.query.filter_by(list_id=list_id).all()
+        tasks = db.session.get(List, list_id).tasks
 
         return (
             jsonify(
@@ -219,40 +218,3 @@ def create_task(list_id):
         db.session.rollback()
         print(e)
         return jsonify({"message": f"Failed to create a new task. error is {e}"}), 400
-
-
-# modify a specific task in a specific list
-@list_blueprint.route("/lists/<list_id>/tasks/<task_id>", methods=["PUT"])
-@login_required
-def modify_task(task_id):
-    if not current_user.is_authenticated:
-        return jsonify({"message": "User is not authenticated"}), 401
-    try:
-        name = request.json.get("name")
-        task = Task.query.get(task_id)
-        task.name = name
-        db.session.commit()
-
-        return jsonify({"message": f"I modified the task with id {task_id}"})
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"message": f"Failed to modify the task. error is {e}"}), 400
-
-
-# delete a specific base task in a specific list
-@list_blueprint.route("/lists/<list_id>/tasks/<task_id>", methods=["DELETE"])
-@login_required
-def delete_task(task_id):
-    if not current_user.is_authenticated:
-        return jsonify({"message": "User is not authenticated"}), 401
-    try:
-        task = Task.query.get(task_id)
-        for subtask in task.subtasks:
-            db.session.delete(subtask)
-        db.session.delete(task)
-        db.session.commit()
-
-        return jsonify({"message": f"I deleted the task with id {task_id}"})
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"message": f"Failed to delete the task. error is {e}"}), 400
