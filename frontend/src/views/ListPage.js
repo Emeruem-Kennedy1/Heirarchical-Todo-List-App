@@ -105,19 +105,26 @@ const ListPage = () => {
       sx={{
         height: "100%",
         marginBottom: "10vh",
+        marginTop: "10vh",
       }}
     >
       <Typography
         variant="h4"
         align="center"
         sx={{
-          marginTop: "5%",
+          marginTop: "10%",
           marginBottom: "5%",
         }}
       >
         {listName}
       </Typography>
+
       <AddTaskForm onAddTask={handleAddTask} />
+      {tasks.length === 0 && (
+        <Typography variant="h6" align="center">
+          No tasks yet
+        </Typography>
+      )}
       <div key={forceUpdate} style={{ width: "80%", margin: "20px auto" }}>
         {tasks.map((task) => renderTask(task))}
       </div>

@@ -24,6 +24,7 @@ const Header = () => {
 
   // get username from local storage
   const username = localStorage.getItem("username");
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
 
   const handleLogout = () => {
     api
@@ -32,6 +33,7 @@ const Header = () => {
         if (response.status === 200) {
           localStorage.removeItem("username");
           localStorage.removeItem("isLoggedIn");
+          // clear cookies on logout
           navigate("/login");
         }
       })
@@ -65,16 +67,18 @@ const Header = () => {
                   {username ? username : "Guest"}
                 </Typography>
               )}
-              <Button
-                color="inherit"
-                startIcon={<LogoutIcon />}
-                sx={{ marginLeft: 2 }}
-                onClick={() => {
-                  handleLogout();
-                }}
-              >
-                Logout
-              </Button>
+              {isLoggedIn === "true" && (
+                <Button
+                  color="inherit"
+                  startIcon={<LogoutIcon />}
+                  sx={{ marginLeft: 2 }}
+                  onClick={() => {
+                    handleLogout();
+                  }}
+                >
+                  Logout
+                </Button>
+              )}
             </Box>
           </Grid>
         </Grid>

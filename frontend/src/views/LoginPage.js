@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Button, TextField, Container, Typography, Box } from "@mui/material";
+import React, { useState } from "react";
+import { Button, TextField, Container, Typography, Box, Alert } from "@mui/material";
 import { useNavigate, Link } from "react-router-dom";
 import { useApi } from "../contexts/ApiProvider";
 
@@ -8,41 +8,48 @@ function LoginPage() {
   const api = useApi();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // check if a user is already logged in
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-  useEffect(() => {
-    if (isLoggedIn === "true") {
-      navigate("/");
-    }
-  }, [isLoggedIn, navigate]);
+  const validateEmail = (email) => {
+    // Simple regex for basic email validation
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
+  const isFormValid = () => {
+    return email.length > 0 && password.length > 0 && validateEmail(email);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const response = await api.post("/login", {
-        email: email,
-        password: password,
-      });
+    setErrorMessage(""); // Reset error message at the start
 
+    if (!validateEmail(email)) {
+      setErrorMessage("Invalid email format.");
+      return;
+    }
+    if (password.length === 0) {
+      setErrorMessage("Password is required.");
+      return;
+    }
+
+    try {
+      const response = await api.post("/login", { email, password });
 
       if (response.status === 200) {
-        const username = response.body.user.username; // Note: changed from response.body to response.data
-        // Store the username in local storage (This is not secure)
+        const username = response.body.user.username;
         localStorage.setItem("username", username);
         localStorage.setItem("isLoggedIn", true);
         navigate("/");
       } else {
-        alert("Login failed");
-        navigate("/login");
+        setErrorMessage("Login failed. Please try again.");
       }
     } catch (error) {
       console.error(error);
-      alert("Login failed");
-      navigate("/login");
+      setErrorMessage("Login failed. Please try again.");
     }
   };
+
 
   return (
     <Container
@@ -51,7 +58,8 @@ function LoginPage() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        height: "82vh",
+        height: "100vh",
+        justifyContent: "center",
       }}
     >
       <Box
@@ -62,10 +70,15 @@ function LoginPage() {
           alignItems: "center",
         }}
       >
-        <Typography component="h1" variant="h5">
+        <Typography component="h1" variant="h3">
           Sign in
         </Typography>
-        <Box component="form" noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          {errorMessage && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {errorMessage}
+            </Alert>
+          )}
           <TextField
             variant="outlined"
             margin="normal"
@@ -97,17 +110,14 @@ function LoginPage() {
             variant="contained"
             color="primary"
             sx={{ mt: 3, mb: 2 }}
-            onClick={handleSubmit}
+            disabled={!isFormValid()}
           >
             Sign In
           </Button>
         </Box>
         <Typography>
-          Don't have an account?{" "}
-          <Link
-            to="/signup"
-            style={{ textDecoration: "none", color: "blue" }}
-          >
+          Don't have an account? &nbsp;
+          <Link to="/signup" style={{ textDecoration: "none", color: "blue" }}>
             Sign Up
           </Link>
         </Typography>
