@@ -59,7 +59,7 @@ function SignupPage() {
       if (response.status === 201) {
         navigate("/login");
       } else {
-        setErrorMessage("Signup failed. Please try again.");
+        setErrorMessage(response.body.message);
       }
     } catch (error) {
       console.error(error);

@@ -15,13 +15,9 @@ def login():
 
         user = User.query.filter_by(email=email).first()
 
-        if not user:
-            return jsonify({"message": "User does not exist"}), 401
-
-        if not check_password_hash(user.password_hash, password):
+        if not user or not check_password_hash(user.password_hash, password):
             return jsonify({"message": "Invalid username or password"}), 401
         login_user(user)
-        print("logged in")
         return (
             jsonify({"message": "Successfully logged in", "user": user.to_dict()}),
             200,
@@ -42,7 +38,7 @@ def signup():
         user = User.query.filter_by(email=email).first()
 
         if user:
-            return jsonify({"message": "User already exists"}), 401
+            return jsonify({"message": "email address already exists"}), 400
 
         new_user = User(email=email, password_hash=password_hash, username=username)
         db.session.add(new_user)
@@ -58,6 +54,7 @@ def signup():
             201,
         )
     except Exception as e:
+        db.session.rollback()
         return jsonify({"message": f"Failed to create a new user. error is {e}"}), 400
 
 
