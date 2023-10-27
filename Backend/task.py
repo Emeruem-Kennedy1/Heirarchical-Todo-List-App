@@ -95,8 +95,6 @@ def update_task(task_id):
 def delete_task(task_id):
     try:
         task = Task.query.get(task_id)
-        for subtask in task.subtasks:
-            db.session.delete(subtask)
         db.session.delete(task)
         db.session.commit()
 
@@ -119,6 +117,32 @@ def update_subtasks_status(task, status):
         update_subtasks_status(subtask, status)
 
 
+def update_parent_status(task):
+    """Recursively update the status of parent tasks based on the status of their children."""
+    print(task.parent)
+    if task.parent:
+        # Fetch all siblings (including the current task)
+        siblings = Task.query.filter_by(parent_id=task.parent_id).all()
+
+        # Check if all siblings are complete
+        if all(sibling.status for sibling in siblings):
+            # If all siblings are complete and the parent's status is not complete, update it
+            if not task.parent.status:
+                task.parent.status = True
+                update_parent_status(
+                    task.parent
+                )  # Recursively update the parent's parent
+        else:
+            # If any sibling is incomplete and the parent's status is not incomplete, update it
+            if task.parent.status:
+                print("here")
+                task.parent.status = False
+                print(task.parent.status, task.parent.name)
+                update_parent_status(
+                    task.parent
+                )  # Recursively update the parent's parent
+
+
 @task_blueprint.route("/task/<task_id>/status", methods=["PUT"])
 @login_required
 def update_task_status(task_id):
@@ -127,20 +151,19 @@ def update_task_status(task_id):
         new_status = not task.status
         task.status = new_status
 
-        # If a task is marked as complete
-        if new_status:
-            update_subtasks_status(task, True)
+        # Update all subtasks if the task is marked as complete/incomplete
+        update_subtasks_status(task, new_status)
 
-        # If a child task is marked as incomplete
-        elif not new_status and task.parent:
-            task.parent.status = False
+        # Commit the status change of the task and its subtasks
+        db.session.commit()
 
-        # Check if all siblings (including the task itself) are complete
-        siblings = Task.query.filter_by(parent_id=task.parent_id).all()
-        if all(sibling.status for sibling in siblings) and task.parent:
-            task.parent.status = True
+        # Re-fetch the task to ensure we have the latest data
+        task = Task.query.get(task_id)
 
-        # Commit all changes in a single transaction
+        # Update parent status based on the status of siblings
+        update_parent_status(task)
+
+        # Commit any changes made by updating the parent status
         db.session.commit()
 
         return jsonify(
@@ -152,7 +175,7 @@ def update_task_status(task_id):
     except Exception as e:
         return jsonify(
             {
-                "message": f"Failed to update status of task with id {task_id}. error is {e}"
+                "message": f"Failed to update status of task with id {task_id}. Error: {e}"
             }
         )
 
