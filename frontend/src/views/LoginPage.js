@@ -42,7 +42,7 @@ function LoginPage() {
         localStorage.setItem("isLoggedIn", true);
         navigate("/");
       } else {
-        setErrorMessage("Login failed. Please try again.");
+        setErrorMessage(response.body.message);
       }
     } catch (error) {
       console.error(error);
