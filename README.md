@@ -46,6 +46,15 @@ List any prerequisites, libraries, OS version, etc., needed before installing th
     git clone https://github.com/Emeruem-Kennedy1/Heirarchical-Todo-List-App.git
     ```
 
+2. **create and activate a virtual environment:**
+    
+    ```bash
+    python -m venv venv
+    source venv/bin/activate
+    ``` 
+
+
+
 2. **Navigate to the backend directory:**
 
     ```bash
