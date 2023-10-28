@@ -1,5 +1,10 @@
-from extensions import db
+from . import db, login_manager
 from flask_login import UserMixin
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db.session.get(User, user_id)
 
 
 class User(UserMixin, db.Model):

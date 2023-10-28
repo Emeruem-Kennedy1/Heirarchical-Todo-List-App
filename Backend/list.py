@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify  # noqa
-from db.models import List, Task
-from extensions import db
+from .models import List, Task, db
 from flask_login import login_required, current_user
 
 

@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify  # noqa
-from db.models import Task
-from extensions import db
+from .models import Task, db
 from flask_login import login_required
 
 task_blueprint = Blueprint("task", __name__)
@@ -11,7 +10,7 @@ task_blueprint = Blueprint("task", __name__)
 @login_required
 def get_subtasks(task_id):
     try:
-        task = Task.query.get(task_id)
+        task = db.session.get(Task, task_id)
         return jsonify(
             {
                 "message": f"Successfully retrieved subtasks from task with id {task_id}.",
@@ -31,9 +30,8 @@ def get_subtasks(task_id):
 @login_required
 def create_subtask(task_id):
     try:
-        parent_task = Task.query.get(task_id)
+        parent_task = db.session.get(Task, task_id)
         parent_task.task_depth = parent_task.calculate_depth()
-        print(parent_task.task_depth)
         name = request.json.get("name")
         can_have_subtasks = True if parent_task.task_depth < 2 else False
 
@@ -73,7 +71,7 @@ def create_subtask(task_id):
 def update_task(task_id):
     try:
         name = request.json.get("name")
-        task = Task.query.get(task_id)
+        task = db.session.get(Task, task_id)
         task.name = name
         db.session.commit()
 
@@ -94,7 +92,7 @@ def update_task(task_id):
 @login_required
 def delete_task(task_id):
     try:
-        task = Task.query.get(task_id)
+        task = db.session.get(Task, task_id)
         db.session.delete(task)
         db.session.commit()
 
@@ -119,10 +117,9 @@ def update_subtasks_status(task, status):
 
 def update_parent_status(task):
     """Recursively update the status of parent tasks based on the status of their children."""
-    print(task.parent)
     if task.parent:
         # Fetch all siblings (including the current task)
-        siblings = Task.query.filter_by(parent_id=task.parent_id).all()
+        siblings = db.session.query(Task).filter_by(parent_id=task.parent_id).all()
 
         # Check if all siblings are complete
         if all(sibling.status for sibling in siblings):
@@ -135,9 +132,7 @@ def update_parent_status(task):
         else:
             # If any sibling is incomplete and the parent's status is not incomplete, update it
             if task.parent.status:
-                print("here")
                 task.parent.status = False
-                print(task.parent.status, task.parent.name)
                 update_parent_status(
                     task.parent
                 )  # Recursively update the parent's parent
@@ -147,7 +142,7 @@ def update_parent_status(task):
 @login_required
 def update_task_status(task_id):
     try:
-        task = Task.query.get(task_id)
+        task = db.session.get(Task, task_id)
         new_status = not task.status
         task.status = new_status
 
@@ -158,7 +153,7 @@ def update_task_status(task_id):
         db.session.commit()
 
         # Re-fetch the task to ensure we have the latest data
-        task = Task.query.get(task_id)
+        task = db.session.get(Task, task_id)
 
         # Update parent status based on the status of siblings
         update_parent_status(task)
@@ -186,7 +181,7 @@ def update_task_status(task_id):
 def move_task(task_id):
     try:
         new_list_id = request.json.get("new_list_id")
-        task = Task.query.get(task_id)
+        task = db.session.get(Task, task_id)
         task.list_id = new_list_id
         db.session.commit()
 

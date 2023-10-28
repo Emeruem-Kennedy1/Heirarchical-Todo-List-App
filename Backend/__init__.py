@@ -1,11 +1,12 @@
 from flask import Flask
 from flask_cors import CORS
-from list import list_blueprint
-from task import task_blueprint
-from Auth.auth import auth_bp
-from extensions import db
 from flask_login import LoginManager
-from db.models import User
+
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+login_manager = LoginManager()
 
 
 def create_app(test_config=None):
@@ -13,6 +14,10 @@ def create_app(test_config=None):
 
     # Set up CORS
     CORS(app, supports_credentials=True)
+
+    from .list import list_blueprint
+    from .task import task_blueprint
+    from .auth import auth_bp
 
     # Register blueprints
     app.register_blueprint(list_blueprint, url_prefix="/api", name="list")
@@ -33,12 +38,7 @@ def create_app(test_config=None):
 
     # Initialize extensions
     db.init_app(app)
-    login_manager = LoginManager()
     login_manager.init_app(app)
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return db.session.get(User, user_id)
 
     with app.app_context():
         db.create_all()
@@ -48,8 +48,3 @@ def create_app(test_config=None):
         return "Welcome to the backend!"
 
     return app
-
-
-if __name__ == "__main__":
-    app = create_app()
-    app.run(debug=True, port=7000)
