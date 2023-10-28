@@ -5,6 +5,10 @@ import { useApi } from "../contexts/ApiProvider";
 import AddTaskForm from "../components/AddTaskFrom";
 import { Container, Typography } from "@mui/material";
 
+/**
+ * Renders the ListPage component, which displays a list of tasks and allows the user to add, delete, and expand tasks.
+ * @returns {JSX.Element} The ListPage component
+ */
 const ListPage = () => {
   const { listId } = useParams();
   const api = useApi();
@@ -13,6 +17,9 @@ const ListPage = () => {
   const [expandedTasks, setExpandedTasks] = useState([]);
   const [forceUpdate, setForceUpdate] = useState(0);
 
+  /**
+   * Fetches the list of tasks from the API and updates the state with the new data.
+   */
   const fetchList = useCallback(async () => {
     try {
       const data = await api.get(`/lists/${listId}`);
@@ -29,6 +36,10 @@ const ListPage = () => {
     fetchList();
   }, [fetchList]);
 
+  /**
+   * Deletes a task from the API and updates the state with the new data.
+   * @param {number} taskId - The ID of the task to delete
+   */
   const handleDeleteTask = useCallback(
     async (taskId) => {
       try {
@@ -41,6 +52,10 @@ const ListPage = () => {
     [api, fetchList]
   );
 
+  /**
+   * Adds a new task to the API and updates the state with the new data.
+   * @param {string} taskName - The name of the new task
+   */
   const handleAddTask = useCallback(
     async (taskName) => {
       try {
@@ -53,6 +68,12 @@ const ListPage = () => {
     [api, fetchList, listId]
   );
 
+  /**
+   * Recursively searches for a task with the given ID in the nested task structure.
+   * @param {Array} tasks - The array of tasks to search through
+   * @param {number} taskId - The ID of the task to find
+   * @returns {Object|null} The task object with the given ID, or null if it is not found
+   */
   const findTaskInNested = (tasks, taskId) => {
     let found = null;
     for (let task of tasks) {
@@ -69,6 +90,11 @@ const ListPage = () => {
     return found;
   };
 
+  /**
+   * Toggles the expanded state of a task with the given ID.
+   * @param {number} taskId - The ID of the task to toggle
+   * @param {boolean} isExpanded - The new expanded state of the task
+   */
   const toogleExpanded = (taskId, isExpanded) => {
     const task = findTaskInNested(tasks, taskId);
     if (task && task.subtasks && task.subtasks.length > 0) {
@@ -80,6 +106,11 @@ const ListPage = () => {
     }
   };
 
+  /**
+   * Recursively renders a task and its subtasks as a NestedAccordion component.
+   * @param {Object} task - The task object to render
+   * @returns {JSX.Element} The NestedAccordion component for the task and its subtasks
+   */
   const renderTask = (task) => (
     <NestedAccordion
       key={task.id}

@@ -4,6 +4,10 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 
 
+/**
+ * Renders the footer component with the current year and author name.
+ * @returns {JSX.Element} The JSX footer component.
+ */
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 

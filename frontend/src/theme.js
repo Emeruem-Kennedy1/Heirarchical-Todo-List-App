@@ -1,5 +1,10 @@
 import { createTheme } from '@mui/material/styles';
 
+/**
+ * Creates a theme object with primary and secondary color palettes.
+ *
+ * @returns {Object} The theme object with primary and secondary color palettes.
+ */
 const theme = createTheme({
   palette: {
         primary: {

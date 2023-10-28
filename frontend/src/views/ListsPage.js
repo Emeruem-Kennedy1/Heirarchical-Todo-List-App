@@ -4,10 +4,17 @@ import { useApi } from "../contexts/ApiProvider";
 import Box from "@mui/material/Box";
 import AddListForm from "../components/AddListForm";
 
+/**
+ * A React component that renders the Lists page.
+ * @returns {JSX.Element} The Lists page component.
+ */
 const ListsPage = () => {
   const api = useApi();
   const [lists, setLists] = useState([]);
 
+  /**
+   * A function that fetches the lists from the API and updates the component state.
+   */
   const updateLists = useCallback(() => {
     api.get("/lists").then((response) => {
       if (!response.ok) return console.error("Error fetching lists:", response);

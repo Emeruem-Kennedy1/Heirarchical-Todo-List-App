@@ -12,12 +12,19 @@ import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "../contexts/ApiProvider";
 
+/**
+ * Header component for the application.
+ * @returns {JSX.Element} Header component JSX element.
+ */
 const Header = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
   const api = useApi();
 
+  /**
+   * Navigate to home page.
+   */
   const gotoHome = () => {
     navigate("/");
   };
@@ -26,6 +33,9 @@ const Header = () => {
   const username = localStorage.getItem("username");
   const isLoggedIn = localStorage.getItem("isLoggedIn");
 
+  /**
+   * Handle logout button click.
+   */
   const handleLogout = () => {
     api
       .post("/logout")

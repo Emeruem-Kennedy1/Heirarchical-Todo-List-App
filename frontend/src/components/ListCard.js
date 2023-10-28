@@ -8,6 +8,14 @@ import { useNavigate } from "react-router-dom";
 import { useApi } from "../contexts/ApiProvider";
 import DialogBox from "./DialogBox";
 
+/**
+ * A component that displays a card for a single list.
+ * @param {Object} props - The component props.
+ * @param {number} props.list_id - The ID of the list.
+ * @param {string} props.list_name - The name of the list.
+ * @param {function} props.onUpdateLists - A function to call when the list is updated.
+ * @returns {JSX.Element} - The JSX element representing the list card.
+ */
 const ListCard = ({ list_id, list_name, onUpdateLists }) => {
   const navigate = useNavigate();
   const api = useApi();

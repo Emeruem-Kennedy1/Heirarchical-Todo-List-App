@@ -3,6 +3,10 @@ import { Button, TextField, Container, Typography, Box, Alert } from "@mui/mater
 import { useNavigate, Link } from "react-router-dom";
 import { useApi } from "../contexts/ApiProvider";
 
+/**
+ * Renders the login page component.
+ * @returns {JSX.Element} The login page component.
+ */
 function LoginPage() {
   const navigate = useNavigate();
   const api = useApi();
@@ -10,16 +14,28 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-
+  /**
+   * Validates an email address using a regular expression.
+   * @param {string} email - The email address to validate.
+   * @returns {boolean} Whether the email address is valid.
+   */
   const validateEmail = (email) => {
     // Simple regex for basic email validation
     return /\S+@\S+\.\S+/.test(email);
   };
 
+  /**
+   * Checks if the login form is valid.
+   * @returns {boolean} Whether the login form is valid.
+   */
   const isFormValid = () => {
     return email.length > 0 && password.length > 0 && validateEmail(email);
   };
 
+  /**
+   * Handles the form submission event.
+   * @param {Event} event - The form submission event.
+   */
   const handleSubmit = async (event) => {
     event.preventDefault();
     setErrorMessage(""); // Reset error message at the start
@@ -49,7 +65,6 @@ function LoginPage() {
       setErrorMessage("Login failed. Please try again.");
     }
   };
-
 
   return (
     <Container

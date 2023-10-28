@@ -3,6 +3,10 @@ import { Button, TextField, Container, Typography, Box, Alert } from "@mui/mater
 import { useNavigate, Link } from "react-router-dom";
 import { useApi } from "../contexts/ApiProvider";
 
+/**
+ * Renders a sign up page with a form for users to create an account.
+ * @returns {JSX.Element} The sign up page component.
+ */
 function SignupPage() {
   const navigate = useNavigate();
   const api = useApi();
@@ -12,11 +16,19 @@ function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-
+  /**
+   * Validates an email address using a regular expression.
+   * @param {string} email - The email address to validate.
+   * @returns {boolean} Whether the email address is valid.
+   */
   const validateEmail = (email) => {
     return /\S+@\S+\.\S+/.test(email);
   };
 
+  /**
+   * Checks if the form is valid by ensuring all required fields are filled out and the passwords match.
+   * @returns {boolean} Whether the form is valid.
+   */
   const isFormValid = () => {
     return (
       username.trim().length > 0 &&
@@ -26,6 +38,10 @@ function SignupPage() {
     );
   };
 
+  /**
+   * Handles form submission by sending a POST request to the server with the user's information.
+   * @param {Event} event - The form submission event.
+   */
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -66,7 +82,6 @@ function SignupPage() {
       setErrorMessage("Signup failed. Please try again.");
     }
   };
-
 
   return (
     <Container

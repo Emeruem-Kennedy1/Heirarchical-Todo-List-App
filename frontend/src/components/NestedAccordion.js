@@ -1,3 +1,21 @@
+/**
+ * A component that renders a nested accordion for a task and its subtasks.
+ *
+ * @param {Object} props - The component props.
+ * @param {string} props.title - The title of the task.
+ * @param {function} props.onDelete - The function to call when the task is deleted.
+ * @param {ReactNode} props.children - The subtasks of the task.
+ * @param {boolean} props.canHaveSubtasks - Whether the task can have subtasks.
+ * @param {boolean} props.hasSubtasks - Whether the task has subtasks.
+ * @param {string} props.taskID - The ID of the task.
+ * @param {function} props.onUpdateTasks - The function to call when the tasks are updated.
+ * @param {number} props.depth - The depth of the task in the hierarchy.
+ * @param {string} props.currentListId - The ID of the current list.
+ * @param {boolean} props.status - The status of the task.
+ * @param {boolean} props.isExpanded - Whether the task is expanded.
+ * @param {function} props.onToggleExpanded - The function to call when the task is expanded or collapsed.
+ * @returns {JSX.Element} The JSX element representing the nested accordion.
+ */
 import React, { useState } from "react";
 import {
   Accordion,
