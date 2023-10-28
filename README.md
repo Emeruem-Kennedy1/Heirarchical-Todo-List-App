@@ -2,6 +2,11 @@
 
 This is a simple todo list app that allows users to create and manage heirarchical todo lists.
 
+## Demo
+Here is a demo of the app on loom:
+
+[Video Demo](https://www.loom.com/share/fccdf880728c4c16bba602e7732dab83?sid=6de1b51c-b4be-4381-a84a-a8f13fe3135c)
+
 ## Technologies Used
 - [Flask](https://flask.palletsprojects.com/en/2.0.x/)
 - [React](https://reactjs.org/)
