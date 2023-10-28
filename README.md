@@ -1,6 +1,23 @@
-# Project Title
+# Two-Do (A heirarchical todo list app)
 
-Brief description of your project goes here, outlining the main purpose, features, and technology stack used. This should provide a clear overview for anyone new to the project.
+This is a simple todo list app that allows users to create and manage heirarchical todo lists.
+
+## Technologies Used
+- [Flask](https://flask.palletsprojects.com/en/2.0.x/)
+- [React](https://reactjs.org/)
+
+To see the folder structure of the project, click [here](#folder-structure).
+
+## Features
+- Sign up and login
+- Create multiple todo lists
+- Create multiple tasks in each todo list
+- Create subtasks in each task
+- Create subtasks in each subtask
+- Mark tasks as complete (subtasks too)
+- Move top-level tasks to other todo lists
+- edit tasks, subtasks and todo lists
+- delete tasks, subtasks and todo lists
 
 ## Getting Started
 
@@ -86,4 +103,46 @@ In the project root directory, run the following command:
 
 ```bash
 python -m unittest discover
+```
+
+
+## Folder Structure
+```
+Heirarchical-Todo-List-App
+│
+├── Backend/                  # Backend API developed with Flask
+│   ├── __init__.py           # Initialization of the Flask app
+│   ├── auth.py               # Authentication related operations
+│   ├── list.py               # Handling todo list operations
+│   ├── models.py             # Database models
+│   ├── readme.md             # Backend specific documentation
+│   ├── requirements.txt      # Dependencies for the backend
+│   └── task.py               # Task management operations
+│
+├── frontend/                 # Frontend developed using React
+│   ├── package-lock.json     # Locked versions of npm dependencies
+│   ├── package.json          # NPM package configuration
+│   ├── public/               # Public assets like HTML, logo, etc.
+│   │   ├── index.html        # Entry HTML file
+│   │   ├── logo.png          # App logo
+│   │   └── manifest.json     # Web app manifest file
+│   ├── src/                  # Source files for React components
+│   │   ├── App.js            # Main React application component
+│   │   ├── ListAppApiclient.js # API client for backend communication
+│   │   ├── components/       # Reusable React components
+│   │   ├── contexts/         # React contexts for state management
+│   │   ├── hooks/            # Custom React hooks
+│   │   ├── index.js          # Entry point for React app
+│   │   ├── theme.js          # Theme configuration for the app
+│   │   └── views/            # React components for different views/pages
+│   └── ...
+│
+├── tests/                    # Tests for the application
+│   ├── __init__.py           # Initialization for tests
+│   ├── test_list.py          # Tests for list operations
+│   └── test_task.py          # Tests for task operations
+│
+├── .env                      # Environment variables
+├── main.py                   # Main entry point for the Flask application
+└── README.md                 # General documentation for the entire project
 ```
