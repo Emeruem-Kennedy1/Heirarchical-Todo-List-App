@@ -1,77 +1,85 @@
-Certainly! Here's a `readme.md` documentation for the provided code:
+# API Documentation
+
+## Overview
+This API serves a Flask application designed to manage lists and tasks, featuring user authentication and cross-origin resource sharing. The endpoints are grouped under Lists, Tasks, and Authentication, each serving a distinct function within the application.
 
 ---
 
-# List and Task Management API
+## Base URL
+All endpoints are prefixed with: `/api`
 
-This API provides endpoints to manage lists and tasks. It is built using Flask and integrates with a database to perform CRUD operations on lists and tasks.
+---
 
-## Dependencies
+## Authentication
+To access the API, a user must first authenticate by providing a valid username and password via the `/api/login` endpoint. The application uses Flask-Login to manage user sessions and cookies.
 
-- Flask
-- Database models (`List`, `Task`)
+---
 
-## Endpoints
+## Lists Endpoints
+Manage user-specific lists, including tasks within each list.
 
-### Lists
+### GET `/api/lists`
+- **Description:** Retrieves all lists for the authenticated user.
+- **Auth Required:** Yes
 
-1. **Get All Lists**
-   - **Endpoint:** `/lists`
-   - **Method:** `GET`
-   - **Description:** Retrieves all user lists from the database.
+### GET `/api/lists/<list_id>`
+- **Description:** Fetches details of a specific list.
+- **Auth Required:** Yes
 
-2. **Get Specific List**
-   - **Endpoint:** `/lists/<list_id>`
-   - **Method:** `GET`
-   - **Description:** Retrieves a specific list based on its ID.
+### POST `/api/lists`
+- **Description:** Creates a new list.
+- **Auth Required:** Yes
 
-3. **Create New List**
-   - **Endpoint:** `/lists`
-   - **Method:** `POST`
-   - **Description:** Creates a new list in the database.
-   - **Body:** `{ "name": "list_name" }`
+### DELETE `/api/lists/<list_id>`
+- **Description:** Deletes a specific list along with its tasks.
+- **Auth Required:** Yes
 
-4. **Delete Specific List**
-   - **Endpoint:** `/lists/<list_id>`
-   - **Method:** `DELETE`
-   - **Description:** Deletes a specific list based on its ID.
+### PUT `/api/lists/<list_id>`
+- **Description:** Updates the name of a specific list.
+- **Auth Required:** Yes
 
-5. **Update Specific List**
-   - **Endpoint:** `/lists/<list_id>`
-   - **Method:** `PUT`
-   - **Description:** Updates a specific list based on its ID.
-   - **Body:** `{ "name": "new_list_name" }`
+### GET `/api/lists/<list_id>/tasks`
+- **Description:** Retrieves all tasks in a specific list.
+- **Auth Required:** Yes
 
-### Tasks
+### POST `/api/lists/<list_id>/tasks`
+- **Description:** Adds a new task to a specific list.
+- **Auth Required:** Yes
 
-6. **Get All Tasks from a List**
-   - **Endpoint:** `/lists/<list_id>/tasks`
-   - **Method:** `GET`
-   - **Description:** Retrieves all tasks from a specific list.
+---
 
-7. **Create New Task in a List**
-   - **Endpoint:** `/lists/<list_id>/tasks`
-   - **Method:** `POST`
-   - **Description:** Creates a new task in a specific list.
-   - **Body:** `{ "name": "task_name" }`
+## Tasks Endpoints
+Focused on managing tasks and their hierarchical subtasks.
 
-8. **Modify Task in a List**
-   - **Endpoint:** `/lists/<list_id>/tasks/<task_id>`
-   - **Method:** `PUT`
-   - **Description:** Modifies a specific task in a list.
-   - **Body:** `{ "name": "new_task_name" }`
+### GET `/api/task/<task_id>/subtasks`
+- **Description:** Retrieves subtasks of a specific task.
+- **Auth Required:** Yes
 
-9. **Delete Task in a List**
-   - **Endpoint:** `/lists/<list_id>/tasks/<task_id>`
-   - **Method:** `DELETE`
-   - **Description:** Deletes a specific task from a list.
+### POST `/api/task/<task_id>/subtasks`
+- **Description:** Creates a new subtask under a specific task.
+- **Auth Required:** Yes
 
-10. **Move Task to a Different List**
-   - **Endpoint:** `/lists/<list_id>/tasks/<task_id>/move`
-   - **Method:** `PUT`
-   - **Description:** Moves a specific task to a different list.
-   - **Body:** `{ "new_list_id": "target_list_id" }`
+### PUT `/api/task/<task_id>`
+- **Description:** Updates details of a specific task.
+- **Auth Required:** Yes
 
-## Usage
+### DELETE `/api/task/<task_id>`
+- **Description:** Removes a specific task.
+- **Auth Required:** Yes
 
-To use this API, ensure you have Flask set up and the necessary database models (`List`, `Task`) imported. Initialize the Flask app and register the `list_blueprint` to handle the above endpoints.
+### PUT `/api/task/<task_id>/status`
+- **Description:** Toggles and updates the status of a task and its related subtasks.
+- **Auth Required:** Yes
+
+### PUT `/api/task/<task_id>/move`
+- **Description:** Moves a task to a different list.
+- **Auth Required:** Yes
+
+---
+
+## General Notes
+- User authentication is mandatory for accessing all endpoints.
+- The application uses SQLAlchemy for database operations and Flask-Login for user session management.
+- Configuration settings like database connection, session cookies, and security keys are managed via environment variables.
+
+---
