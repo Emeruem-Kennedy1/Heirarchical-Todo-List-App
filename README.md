@@ -58,7 +58,7 @@ List any prerequisites, libraries, OS version, etc., needed before installing th
 2. **Navigate to the backend directory:**
 
     ```bash
-    cd /backend
+    cd backend
     ```
 
 3. **Install dependencies:**
