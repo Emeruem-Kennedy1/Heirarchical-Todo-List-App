@@ -74,6 +74,13 @@ List any prerequisites, libraries, OS version, etc., needed before installing th
     ```bash
     npm install
     ```
+3. **Set environment variables:**
+   
+   Create a `.env` file in the frontend directory and update the necessary environment variables.
+
+    ```dotenv
+    REACT_APP_BASE_API_URL=http://127.0.0.1:7000
+    ```
 
 ### Starting the Application
 
